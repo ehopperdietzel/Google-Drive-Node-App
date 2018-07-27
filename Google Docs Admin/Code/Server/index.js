@@ -17,170 +17,185 @@ const fs = require('fs');
 // Módulo de las APIs de Google
 const {google} = require('googleapis');
 
+// Módulo para manipular cookies
+var cookieParser = require('cookie-parser')
+
 // Módulo Express utilizado para simplificar la API REST
 var express = require('express');
 
 // Instancia de Express
 var app = express();
 
-// Almacena los Tokens
-var tokens = new Array();
+// Activa el uso de cookies, para almacenar los tokens en los requests
+app.use(cookieParser());
 
-// Path al Session Key ( No se debe compartir ese archivo! )
-const privatekey = require(__dirname + "/conf/key.json");
+// Almacena las sesiones desde varios origenes ( Más de un usuario conectado a la cuenta admin )
+var sessions = new Array();
 
-// Path a las configuraciones
+// Lee las configuraciones
 const conf = require(__dirname + "/conf/conf.json");
 
 // Instancia de Google Drive
-let drive = google.drive('v3');
+var drive = google.drive('v3');
 
-// Genera los datos del Jason Web Token a partir de PrivateKey.json
-const admin = new google.auth.JWT(
-  privatekey.client_email,
-  null,
-  privatekey.private_key,
-  ['https://www.googleapis.com/auth/drive']
-);
+// Instancia de Google Plus ( Única forma de verificar email )
+var plus = google.plus('v1');
 
-// Autoriza el Jason Web Token
-admin.authorize((err, toks) =>
-{
-  // Si el token es inválido se detiene el servidor
-  if (err)
+// Envía la página de inicio ( Sin parámetros de entrada, retorna la página de inicio HTML )
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/html/index.html');
+});
+
+// Genera un URL para iniciar sesión ( Sin parámetros de entrada, retorna el URL string )
+app.get('/loginUrl', function (req, res) {
+
+  // Genera el URL
+  var generator = new google.auth.OAuth2(conf.client_id, conf.client_secret,conf.redirect_uris);
+  const url = generator.generateAuthUrl({ access_type: 'offline', scope: conf.scopes });
+
+  //Envía el URL al cliente
+  res.send(url);
+});
+
+app.get('/login', function (req, res) {
+
+  // Detecta si existe el código de verificación en la redirección del login
+  if(req.query.code)
   {
-    console.log(err);
-    return;
+    // Crea un nuevo cliente OAuth2
+    var admin = new google.auth.OAuth2(conf.client_id, conf.client_secret,conf.redirect_uris);
+
+    // Obtiene el token a partir del código de verificación
+    admin.getToken(req.query.code, (err, token) => {
+
+      // Si ocurre un error con la verificación
+      if (err)
+      {
+        console.log(err);
+        return;
+      }
+
+      // Asigna el token al cliente
+      admin.setCredentials(token);
+
+      // Verifica si el email corresponde al del admin
+      plus.people.get({
+          auth: admin,
+          userId: 'me'
+      }, function (err, user) {
+
+        // Si ocurre un error con Google
+        if( err ) {
+          console.log(err)
+          return;
+        }
+
+        // Si existen emails
+        if( user.data.emails )
+        {
+          // Recorre los emails del usuario
+          for(var i = 0; i < user.data.emails.length; i++ )
+          {
+            // Si encuentra el email del admin
+            if( user.data.emails[i].value == conf.email )
+            {
+              // Almacena al cliente para futuras acciones
+              sessions.push(admin);
+
+              // Almacena el token en las cookies
+              res.cookie('token', admin.credentials.access_token)
+
+              // Redirige al cliente a la página de inicio
+              res.sendFile(__dirname + '/html/index.html');
+              return;
+            }
+          }
+          // Si el usuario no es el admin
+          res.send("Usuario no permitido.");
+        }
+      });
+    });
   }
 
-  console.log("Conectado a Google Drive.")
-
-
-  /************************************************
-   ** Solicitud de página de inicio
-   ** Método: GET
-   ** Input:  null
-   ** Output: interface.html
-  *************************************************/
-
-  app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/html/interface.html');
-  });
-
-  /************************************************
-   ** Solicitud de inicio de sesión
-   ** Método: GET
-   ** Input:  password:string
-   ** Output: token:string
-  *************************************************/
-
-  app.get('/login', function (req, res) {
-
-    // Si la contraseña es igual a la almacenada en conf.json retorna un token
-    if( req.query.password == conf.password )
-    {
-      // Genera un token y lo almacena. Se elimina si el admin no ha interactuado en 3 horas ( Cierra sesión )
-      const newToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      tokens.push( { token:newToken, lastTime:new Date() } );
-
-      // Envía la respuesta con el token
-      res.status(200).send( newToken );
-    }
-
-    // En caso contrario retorna error.
-    else res.status(401).send("Constraseña Incorrecta.");
-
-  });
-
-  /************************************************
-   ** Crear nuevo directorio
-   ** Método: POST
-   ** Input:  nombre:string,idPadre:string,
-   ** Output: token:string
-  *************************************************/
-
-  drive.files.list({
-  auth: admin,
-  q: "name contains 'a'"
-  }, function (err, response) {
-  if (err) {
-     console.log('The API returned an error: ' + err);
-     return;
-  }
-  var files = response.files;
-  if (files.length == 0) {
-     console.log('No files found.');
-  } else {
-     console.log('Files from Google Drive:');
-     for (var i = 0; i < files.length; i++) {
-         var file = files[i];
-         console.log('%s (%s)', file.name, file.id);
-     }
-  }
-  });
-
-  app.get('/getFiles', function (req, res) {
-
-  });
-
-  // Inicia el servidor en el puerto establecido en el archivo conf.json
-  app.listen(conf.port, function () {
-    console.log('Servidor local corriendo en http://localhost:' + conf.port + ".");
-  });
+  // En caso contrario retorna error.
+  else res.status(401).send("Constraseña Incorrecta.");
 
 });
 
-/*
-//creating the folder in drive
-  function createFolder(name,folderId,next) {
-    var folderIds=[];
-    if(folderId !== null){
-      folderIds.push(folderId);
-    }
-    var fileMetadata = {
-      'name' : name,
-      'mimeType' : 'application/vnd.google-apps.folder',
-       parents: folderIds
-    };
-    drive.files.create({
-      resource: fileMetadata,
-      fields: 'id'
-    }, function(err, file) {
-      if(err) {
-        console.log("error creating folder: ",err);
-        next(err);
-      } else {
-        console.log('Folder Id: ', file.id);
-        next(err,file.id);
+// Genera una lista con los archivos y directorios de otro ( Entrada id (ID del directorio), retorna una lista con los archivos )
+app.get('/listDir', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin || !req.query.id)
+  {
+    res.send("Error");
+    return;
+  }
+
+  var query = "'" + req.query.id + "' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.document')";
+  drive.files.list({
+    auth: admin,
+    q: query },
+    function (err, files)
+    {
+      if (err)
+      {
+        console.log(err);
+      }
+      else
+      {
+        res.send(JSON.stringify(files.data.files));
       }
     });
+});
+
+/*
+app.post('/copyFile', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin || !req.query.id)
+  {
+    res.send("Error");
+    return;
   }
+
+  var query = "'" + req.query.id + "' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.document')";
+  drive.files.list({
+    auth: admin,
+    q: query },
+    function (err, files)
+    {
+      if (err)
+      {
+        console.log(err);
+      }
+      else
+      {
+        res.send(JSON.stringify(files.data.files));
+      }
+    });
+});
 */
-// Verifica si un token existe y elimina los caducados
-function checkToken(token)
+
+// Inicia el servidor en el puerto establecido en el archivo conf.json
+app.listen(conf.port, function () {
+  console.log('Servidor local corriendo en http://localhost:' + conf.port + ".");
+});
+
+
+// Verifica si un token existe
+function getSessionFromToken(token)
 {
-  // Obtiene el tiempo actual
-  const currentTime = new Date();
-
-  // Largo del arreglo
-  var length = tokens.length;
-
   // Recorre el arreglo de tokens
-  for( var i = 0; i < length; i++ )
+  for( var i = 0; i < sessions.length; i++ )
   {
 
-    // Si el token no se ha utilizado en 3 horas se elimina
-    if( Math.abs(tokens[i].lastTime.getTime() - currentTime.getTime()) / 1000*60 > 60*3)
+    // Si existe el token lo retorna
+    if( sessions[i].credentials.access_token == token )
     {
-      tokens.splice(i, 1);
-      length--;
-    }
-
-    // Si existe el token retorna verdadero y actualiza su ultima fecha
-    if( tokens[i].token == token )
-    {
-      tokens[i].lastTime = new Date();
-      return true;
+      return sessions[i];
     }
 
   }

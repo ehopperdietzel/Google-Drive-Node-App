@@ -1,4 +1,8 @@
 {
-  "password":"admin",
+  "client_id":"774327856003-gsepbc1ff12ehasbqblvtqflnn9u5he0.apps.googleusercontent.com",
+  "client_secret":"KVfqDALpnpCOcKlrP4lRIYM6",
+  "email":"ehopperdietzel@gmail.com",
+  "scopes":["https://www.googleapis.com/auth/plus.profile.emails.read","https://www.googleapis.com/auth/drive"],
+  "redirect_uris":["http://localhost:3000/login"],
   "port":3000
 }

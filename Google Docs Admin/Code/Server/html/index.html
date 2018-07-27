@@ -1,0 +1,106 @@
+<html>
+<head>
+  <title>Demostración de Interfaz</title>
+  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginWindow">
+    <button>Login</button>
+  </div>
+
+  <!-- INTERFAZ -->
+  <div id="interfaceWindow">
+
+    <!-- LISTAR DIRECTORIO -->
+    <div id="listDir">
+      <button>Listar Directorio</button>
+      <input placeholder="ID del Directorio"/>
+      <div style="font-size:13px"></div>
+    </div>
+
+
+  </div>
+</body>
+</html>
+
+<script>
+
+$(document).ready(function(){
+
+  // Si existe el token en las cookies ( Ya se ha iniciado sesión )
+  //if( $.cookie('token') )
+  //{
+    // Esconde la ventana de login
+    //$('#loginWindow').hide();
+
+    $('#listDir button').click(function(){
+      $.ajax({
+        url: "/listDir",
+        type: 'GET',
+        data:
+        {
+          id: $('#listDir input').val() // ID del directorio ( El ID del directorio principal es 'root' ).
+        },
+        success: function(res,status)
+        {
+          // Retorna un arreglo JSON con la información de cada archivo del directorio (kind,id,name,mimeType)
+          var files = JSON.parse(res);
+
+          // Imprime los archivos
+          $('#listDir div').empty();
+          $('#listDir div').append("<b style='font-size:20px'>--------- Archivos---------- </b><br>");
+          for( var i = 0; i < files.length; i++ )
+          {
+            $('#listDir div').append("<b>ID:</b> " + files[i].id + "<br><b>NAME:</b> " + files[i].name + "<br><b>TIPO:</b> " + files[i].mimeType + "<br><br>");
+
+          }
+        }
+      });
+    });
+
+  //}
+  // Si no se ha iniciado sesión
+  //else
+  //{
+    // Esconde la interfaz
+    //$('#interfaceWindow').hide();
+
+    // Al presionar el botón login, el servidor genera un URL para iniciar sesión
+    $('#loginWindow button').click(function(){
+      $.ajax({
+        url: "/loginUrl",
+        type: 'GET',
+        success: function(res,status)
+        {
+          // Redirige al URL para iniciar sesión
+          window.location.href = res;
+        }
+      });
+    });
+  //}
+
+/*
+  $('#filesWindow button').click(function(){
+
+    var password = $('#loginWindow input').val();
+
+    $.ajax({
+      url: "/getFiles",
+      type: 'GET',
+      success: function(res,status)
+      {
+          alert(res + " " + status);
+      },
+      error: function(res,status)
+      {
+          alert(res + " " + status);
+      }
+    });
+  });
+*/
+});
+
+</script>
