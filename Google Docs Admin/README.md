@@ -37,7 +37,7 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 10. En la sección *URI de redireccionamiento autorizados* ingresar los URL a los cuales se dará permiso de redireccionar luego de iniciar sesión, por ejemplo, si ejecuta la aplicación en un servidor local añadir el URL ```http://localhost:3000/login```.
 11. Una vez terminado hacer click en *Crear*.
 12. Se mostrarán dos códigos, los cuales debe añadir al archivo ```Server/conf/conf.json```.<br>
-```json 
+```javascript
 {
 	"client_id":"ID de Cliente",
 	"client_secret":"Secreto de Cliente",
