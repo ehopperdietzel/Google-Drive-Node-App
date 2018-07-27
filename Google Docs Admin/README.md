@@ -39,13 +39,13 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 12. Se mostrarán dos códigos, los cuales debe añadir al archivo ```Server/conf/conf.json```.<br>
 ```json 
 {
-"client_id":"ID de Cliente,
-"client_secret":"Secreto de Cliente",
-  "email":"Email del administrador",
-  "scopes":["https://www.googleapis.com/auth/plus.profile.emails.read","https://www.googleapis.com/auth/drive"],
-  "mimeTypes":["application/vnd.google-apps.folder","application/vnd.google-apps.document"],
-  "redirect_uris":["http://localhost:3000/login"],
-  "port":3000
+	"client_id":"ID de Cliente",
+	"client_secret":"Secreto de Cliente",
+	"email":"Email del administrador",
+	"scopes":["https://www.googleapis.com/auth/plus.profile.emails.read","https://www.googleapis.com/auth/drive"],
+	"mimeTypes":["application/vnd.google-apps.folder","application/vnd.google-apps.document"],
+	"redirect_uris":["http://localhost:3000/login"],
+	"port":3000
 }
 ```
 13. Por último, añadir el email del administrador y configurar los otros parámetros a gusto.
