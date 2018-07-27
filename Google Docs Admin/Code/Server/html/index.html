@@ -21,6 +21,15 @@
       <div style="font-size:13px"></div>
     </div>
 
+    <!-- COPIAR ARCHIVO -->
+    <div id="copyFile">
+      <button>Copiar Archivo</button>
+      <input class="a" placeholder="ID del archivo"/>
+      <input class="b" placeholder="ID del directorio de destino"/>
+      <input class="c" placeholder="Nuevo Nombre de Archivo"/>
+      <div style="font-size:13px"></div>
+    </div>
+
 
   </div>
 </body>
@@ -57,6 +66,24 @@ $(document).ready(function(){
             $('#listDir div').append("<b>ID:</b> " + files[i].id + "<br><b>NAME:</b> " + files[i].name + "<br><b>TIPO:</b> " + files[i].mimeType + "<br><br>");
 
           }
+        }
+      });
+    });
+
+    $('#copyFile button').click(function(){
+      $.ajax({
+        url: "/copyFile",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          fileId: $('#copyFile .a').val(), // ID del directorio ( El ID del directorio principal es 'root' ).
+          parent: $('#copyFile .b').val(),
+          name: $('#copyFile .c').val()
+        }),
+        success: function(res,status)
+        {
+          // Imprime los archivos
+          $('#copyFile div').html(res);
         }
       });
     });

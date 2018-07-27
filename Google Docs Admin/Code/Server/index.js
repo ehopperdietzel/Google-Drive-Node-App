@@ -12,13 +12,16 @@
 ****************************************************************************/
 
 // Módulo para leer y escribir archivos
-const fs = require('fs');
+var fs = require('fs');
 
 // Módulo de las APIs de Google
-const {google} = require('googleapis');
+var {google} = require('googleapis');
 
 // Módulo para manipular cookies
 var cookieParser = require('cookie-parser')
+
+// Módulo para leer POST requests
+var bodyParser = require("body-parser");
 
 // Módulo Express utilizado para simplificar la API REST
 var express = require('express');
@@ -28,6 +31,10 @@ var app = express();
 
 // Activa el uso de cookies, para almacenar los tokens en los requests
 app.use(cookieParser());
+
+// Activa el parseo para los POST requests
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // Almacena las sesiones desde varios origenes ( Más de un usuario conectado a la cuenta admin )
 var sessions = new Array();
@@ -133,10 +140,10 @@ app.get('/listDir', function (req, res) {
     return;
   }
 
-  var query = "'" + req.query.id + "' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.document')";
   drive.files.list({
     auth: admin,
-    q: query },
+    types:conf.mimeTypes,
+    q: "'" + req.query.id + "' in parents and " + mimeTypesQuery() },
     function (err, files)
     {
       if (err)
@@ -150,40 +157,63 @@ app.get('/listDir', function (req, res) {
     });
 });
 
-/*
+
 app.post('/copyFile', function (req, res) {
 
   var admin = getSessionFromToken(req.cookies.token);
 
-  if(!admin || !req.query.id)
+  if(!admin)
   {
     res.send("Error");
     return;
   }
 
-  var query = "'" + req.query.id + "' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.google-apps.document')";
-  drive.files.list({
+  console.log(req.body);
+
+  drive.files.copy({
     auth: admin,
-    q: query },
-    function (err, files)
+    fileId: req.body.fileId,
+    resource:{
+      name: req.body.name,
+      parents: [req.body.parent]
+    }
+    },
+    function (err, ans)
     {
       if (err)
       {
         console.log(err);
+        res.send("No se pudo copiar el archivo.");
       }
       else
       {
-        res.send(JSON.stringify(files.data.files));
+        // Retorna (kind,id,name,mimeType)
+        res.send(JSON.stringify(ans));
       }
     });
 });
-*/
+
 
 // Inicia el servidor en el puerto establecido en el archivo conf.json
 app.listen(conf.port, function () {
   console.log('Servidor local corriendo en http://localhost:' + conf.port + ".");
 });
 
+
+// Genera un string query para filtrar las busquedas de archivos en drive
+function mimeTypesQuery()
+{
+  var q = "(";
+  for(var i = 0; i<conf.mimeTypes.length; i++)
+  {
+      q += "mimeType='" + conf.mimeTypes[i] + "'";
+      if( i != conf.mimeTypes.length - 1)
+      q += " or ";
+  }
+  q += ")";
+
+  return q;
+}
 
 // Verifica si un token existe
 function getSessionFromToken(token)

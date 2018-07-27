@@ -3,6 +3,7 @@
   "client_secret":"KVfqDALpnpCOcKlrP4lRIYM6",
   "email":"ehopperdietzel@gmail.com",
   "scopes":["https://www.googleapis.com/auth/plus.profile.emails.read","https://www.googleapis.com/auth/drive"],
+  "mimeTypes":["application/vnd.google-apps.folder","application/vnd.google-apps.document"],
   "redirect_uris":["http://localhost:3000/login"],
   "port":3000
 }
