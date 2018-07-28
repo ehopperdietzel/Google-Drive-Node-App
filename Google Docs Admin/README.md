@@ -11,11 +11,17 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 * Crear documento ✔️
 * Crear directorio ✔️
 * Descargar documento como PDF ✔️
-* Estabelcer permisos de un documento a otros usuarios
+* Crear permisos a un archivo ✔️
+* Modificar permisos a un archivo ✔️
+* Obtener lista de permisos creados a un archivo ✔️
+* Obtener información de un permiso ( Usuario ) ✔️
+* Eliminar permisos a un archivo ✔️
 * Obtener comentarios de un documento
 * Obtener historial de modificaciones de un documento
 * Obtener última fecha de acceso a un documento
 * Copiar archivo a repositorio VPS
+* Frontend de Testeo
+* Documentación
 
 ## Instalación
 
@@ -49,3 +55,102 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 }
 ```
 13. Por último, añadir el email del administrador y configurar los otros parámetros a gusto.
+
+## Métodos API REST
+
+### Listado de un directorio : GET /listDir
+--
+Retorna una lista con la información de todos los archivos de un directorio.
+Por defecto solo muestra archivos de tipo directorio y Google Docs. Se pueden agregar más tipos modificando el parámetro *mimeTypes* en el archivo *conf.json*. [Lista de MIME Types soportados.](https://developers.google.com/drive/api/v3/mime-types)
+
+##### Entrada
+
+<table>
+	<tr>
+		<th>Parámetro</th>
+		<th>Tipo</th>
+		<th>Descripción</th>
+	</tr>
+	<tr>
+		<td>fileId</td>
+		<td>STRING</td>
+		<td>ID del directorio que se quiere listar. El ID del directorio principal es <i>root<i>.</td>
+	</tr>
+</table>
+
+##### Respuesta
+
+Retorna un arreglo de objetos en formato JSON, donde cada objeto posee los siguientes parámetros:
+
+<table>
+	<tr>
+		<th>Parámetro</th>
+		<th>Tipo</th>
+		<th>Descripción</th>
+	</tr>
+	<tr>
+		<td>id</td>
+		<td>STRING</td>
+		<td>ID de un archivo</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>STRING</td>
+		<td>Nombre de un archivo</td>
+	</tr>
+	<tr>
+		<td>mimeType</td>
+		<td>STRING</td>
+		<td>Tipo de archivo</td>
+	</tr>
+</table>
+
+--
+### Copia de un archivo : POST /copyFile
+--
+Realiza una copia de un archivo en Google Drive.
+
+##### Entrada
+
+Se debe enviar un objeto JSON con los siguientes parámetros.
+<table>
+	<tr>
+		<th>Parámetro</th>
+		<th>Tipo</th>
+		<th>Descripción</th>
+	</tr>
+	<tr>
+		<td>fileId</td>
+		<td>STRING</td>
+		<td>ID del archivo que se quiere desea.</td>
+	</tr>
+	<tr>
+		<td>name</td>
+		<td>STRING</td>
+		<td>Nombre del archivo copiado.</td>
+	</tr>
+	<tr>
+		<td>parentId</td>
+		<td>STRING</td>
+		<td>ID del directorio de destino.</td>
+	</tr>
+</table>
+
+##### Respuesta
+
+Retorna un STRING con el ID de la copia.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

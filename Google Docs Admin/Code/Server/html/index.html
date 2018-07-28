@@ -69,6 +69,15 @@
       <div style="font-size:13px"></div>
     </div>
 
+    <!-- ASIGNAR PERMISOS DE ARCHIVO -->
+    <div id="createFilePermissions">
+      <button>OTORGAR PERMISO</button>
+      <input class="a" placeholder="ID del documento"/>
+      <input class="b" placeholder="Email del Usuario"/>
+      <input class="c" placeholder="Permiso: Ej writer"/>
+      <div style="font-size:13px"></div>
+    </div>
+
 
   </div>
 </body>
@@ -84,13 +93,17 @@ $(document).ready(function(){
     // Esconde la ventana de login
     //$('#loginWindow').hide();
 
+    /****************************************
+     ** Listado de un directorio.
+     ****************************************/
+
     $('#listDir button').click(function(){
       $.ajax({
         url: "/listDir",
         type: 'GET',
         data:
         {
-          id: $('#listDir input').val() // ID del directorio ( El ID del directorio principal es 'root' ).
+          fileId: $('#listDir input').val()
         },
         success: function(res,status)
         {
@@ -109,13 +122,17 @@ $(document).ready(function(){
       });
     });
 
+    /****************************************
+     ** Copia de un archivo.
+     ****************************************/
+
     $('#copyFile button').click(function(){
       $.ajax({
         url: "/copyFile",
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-          fileId: $('#copyFile .a').val(), // ID del directorio ( El ID del directorio principal es 'root' ).
+          fileId: $('#copyFile .a').val(),
           parent: $('#copyFile .b').val(),
           name: $('#copyFile .c').val()
         }),
@@ -211,6 +228,30 @@ $(document).ready(function(){
         }
       });
     });
+
+    $('#createFilePermissions button').click(function(){
+      $.ajax({
+        url: "/createFilePermissions",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          fileId: $('#createFilePermissions .a').val(),
+          permission:
+            {
+              type: "user",
+              role: $('#createFilePermissions .c').val(),
+              emailAddress: $('#createFilePermissions .b').val()
+            }
+        }),
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#createFilePermissions div').html(res);
+        }
+      });
+    });
+
+
 
   //}
   // Si no se ha iniciado sesión

@@ -129,45 +129,69 @@ app.get('/login', function (req, res) {
 
 });
 
-// Genera una lista con los archivos y directorios de otro ( Entrada id (ID del directorio), retorna una lista con los archivos )
+/****************************************
+ ** Listado de un directorio.
+ ****************************************/
+
 app.get('/listDir', function (req, res) {
 
-  var admin = getSessionFromToken(req.cookies.token);
+  // Comprueba que el usuario ha iniciado sesión
+  var admin = getSessionFromToken( req.cookies.token );
 
-  if(!admin || !req.query.id)
+  if(!admin)
   {
-    res.send("Error");
+    res.status(401).send("No ha iniciado sesión.");
     return;
   }
 
+  // Comprueba que exista el número de parámetros requeridos en el request
+  if( invalidRequest( req.query, 1 ) )
+  {
+    res.status(400).send("Request errónea.");
+    return;
+  }
+
+  // Envía el request a Google Drive
   drive.files.list({
     auth: admin,
     types:conf.mimeTypes,
-    q: "'" + req.query.id + "' in parents and " + mimeTypesQuery() },
+    q: "'" + req.query.fileId + "' in parents and " + mimeTypesQuery() },
     function (err, files)
     {
       if (err)
       {
-        console.log(err);
+        res.status(500).send(err);
+        return;
       }
-      else
-      {
-        res.send(JSON.stringify(files.data.files));
-      }
+
+      // Éxito
+      res.send(JSON.stringify(files.data.files));
     });
 });
 
+/****************************************
+ ** Copia de un archivo.
+ ****************************************/
 
 app.post('/copyFile', function (req, res) {
 
+  // Comprueba que el usuario ha iniciado sesión
   var admin = getSessionFromToken(req.cookies.token);
 
   if(!admin)
   {
-    res.send("Error");
+    res.status(401).send("No ha iniciado sesión.");
     return;
   }
 
+  // Comprueba que exista el número de parámetros requeridos en el request
+  if( invalidRequest( req.body, 3 ) )
+  {
+    res.status(400).send("Request errónea.");
+    return;
+  }
+
+  // Envía el request a Google Drive
   drive.files.copy({
     auth: admin,
     fileId: req.body.fileId,
@@ -180,18 +204,16 @@ app.post('/copyFile', function (req, res) {
     {
       if (err)
       {
-        console.log(err);
-        res.send("No se pudo copiar el archivo.");
+        res.status(500).send(err);
+        return;
       }
-      else
-      {
-        // Retorna (kind,id,name,mimeType)
-        res.send(JSON.stringify(ans));
-      }
+
+      // Éxito
+      res.send(ans.data.id);
     });
 });
 
-app.post('/moveFile', function (req, res) {
+app.patch('/moveFile', function (req, res) {
 
   var admin = getSessionFromToken(req.cookies.token);
 
@@ -240,7 +262,7 @@ app.post('/moveFile', function (req, res) {
   });
 });
 
-app.post('/renameFile', function (req, res) {
+app.patch('/renameFile', function (req, res) {
 
   var admin = getSessionFromToken(req.cookies.token);
 
@@ -376,11 +398,171 @@ app.get('/downloadPdf', function (req, res) {
     });
 });
 
+app.post('/createFilePermission', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.permissions.create({
+    auth:admin,
+    resource: req.body.permission,
+    fileId: req.body.fileId,
+  }, function (err, ans) {
+    if (err)
+    {
+      console.error(err);
+    }
+    else
+    {
+      console.log(ans);
+
+      /*
+      data:
+  { kind: 'drive#permission',
+    id: '00438897399906863672',
+    type: 'user',
+    role: 'writer' } }
+    */
+    }
+  });
+});
+
+app.delete('/deleteFilePermission', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.permissions.delete({
+    auth:admin,
+    permissionId: req.body.permissionId,
+    fileId: req.body.fileId,
+  }, function (err, ans) {
+    if (err)
+    {
+      console.error(err);
+    }
+    else
+    {
+      console.log(ans);
+    }
+  });
+});
+
+app.patch('/updateFilePermission', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.permissions.update({
+    auth:admin,
+    permissionId: req.body.permissionId,
+    fileId: req.body.fileId,
+    resource:{
+      role: req.body.role
+    }
+  }, function (err, ans) {
+    if (err)
+    {
+      console.error(err);
+    }
+    else
+    {
+      console.log(ans);
+    }
+  });
+});
+
+app.get('/listFilePermissions', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.permissions.list({
+    auth:admin,
+    fileId: req.query.fileId
+  }, function (err, ans) {
+    if (err)
+    {
+      console.error(err);
+    }
+    else
+    {
+      console.log(ans);
+
+      /*
+      {
+        "kind": "drive#permissionList",
+        "nextPageToken": string,
+        "permissions": [
+          permissions Resource
+        ]
+      }
+      */
+    }
+  });
+});
+
+app.get('/listPermissionInfo', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.permissions.list({
+    auth:admin,
+    fileId: req.body.fileId,
+    permissionId: req.body.permissionId
+  }, function (err, ans) {
+    if (err)
+    {
+      console.error(err);
+    }
+    else
+    {
+      console.log(ans);
+    }
+  });
+});
+
+
+
 // Inicia el servidor en el puerto establecido en el archivo conf.json
 app.listen(conf.port, function () {
   console.log('Servidor local corriendo en http://localhost:' + conf.port + ".");
 });
 
+
+// Comprueba que exista el número de parámetros requeridos en un request
+function invalidRequest(query,length)
+{
+  if( Object.keys(query).length === length )
+    return false;
+  return true;
+}
 
 // Genera un string query para filtrar las busquedas de archivos en drive
 function mimeTypesQuery()
