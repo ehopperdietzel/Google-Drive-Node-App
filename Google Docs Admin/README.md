@@ -57,7 +57,7 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 13. Por último, añadir el email del administrador y configurar los otros parámetros a gusto.
 
 ## Métodos API REST
-
+-----------------------------------------------
 ### Listado de un directorio : GET /listDir
 -----------------------------------------------
 Retorna una lista con la información de todos los archivos de un directorio.
@@ -105,7 +105,7 @@ Retorna un arreglo de objetos en formato JSON, donde cada objeto posee los sigui
 	</tr>
 </table>
 
--------------------------------------------------------------------
+-----------------------------------------------
 ### Copia de un archivo : POST /copyFile
 -----------------------------------------------
 Realiza una copia de un archivo en Google Drive.
@@ -140,6 +140,7 @@ Se debe enviar un objeto JSON con los siguientes parámetros.
 
 Retorna un STRING con el ID de la copia.
 
+-----------------------------------------------
 
 
 
