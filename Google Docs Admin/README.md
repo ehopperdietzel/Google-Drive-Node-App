@@ -6,11 +6,11 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 * Login ✔️
 * Obtener lista de archivos de un directorio ✔️
 * Copiar documento ✔️
-* Mover documento
-* Renombrar documento
-* Crear documento
-* Crear directorio
-* Descargar documento como PDF
+* Mover documento ✔️
+* Renombrar documento ✔️
+* Crear documento ✔️
+* Crear directorio ✔️
+* Descargar documento como PDF ✔️
 * Estabelcer permisos de un documento a otros usuarios
 * Obtener comentarios de un documento
 * Obtener historial de modificaciones de un documento

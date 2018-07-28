@@ -30,6 +30,45 @@
       <div style="font-size:13px"></div>
     </div>
 
+    <!-- MOVER ARCHIVO -->
+    <div id="moveFile">
+      <button>Mover Archivo</button>
+      <input class="a" placeholder="ID del archivo"/>
+      <input class="b" placeholder="ID del directorio de destino"/>
+      <div style="font-size:13px"></div>
+    </div>
+
+    <!-- RENOMBRAR ARCHIVO -->
+    <div id="renameFile">
+      <button>Renombrar Archivo</button>
+      <input class="a" placeholder="ID del archivo"/>
+      <input class="b" placeholder="Nuevo Nombre"/>
+      <div style="font-size:13px"></div>
+    </div>
+
+    <!-- CREAR DOCUMENTO -->
+    <div id="createDoc">
+      <button>Crear Documento</button>
+      <input class="a" placeholder="Nombre"/>
+      <input class="b" placeholder="ID del directorio de destino"/>
+      <div style="font-size:13px"></div>
+    </div>
+
+    <!-- CREAR DIRECTORIO -->
+    <div id="createDir">
+      <button>Crear Directorio</button>
+      <input class="a" placeholder="Nombre"/>
+      <input class="b" placeholder="ID del directorio de destino"/>
+      <div style="font-size:13px"></div>
+    </div>
+
+    <!-- DESCARGAR PDF -->
+    <div id="downloadPdf">
+      <button>Descargar PDF</button>
+      <input class="a" placeholder="ID del documenro"/>
+      <div style="font-size:13px"></div>
+    </div>
+
 
   </div>
 </body>
@@ -84,6 +123,91 @@ $(document).ready(function(){
         {
           // Imprime los archivos
           $('#copyFile div').html(res);
+        }
+      });
+    });
+
+    $('#moveFile button').click(function(){
+      $.ajax({
+        url: "/moveFile",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          fileId: $('#moveFile .a').val(), // ID del directorio ( El ID del directorio principal es 'root' ).
+          parent: $('#moveFile .b').val()
+        }),
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#moveFile div').html(res);
+        }
+      });
+    });
+
+    $('#renameFile button').click(function(){
+      $.ajax({
+        url: "/renameFile",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          fileId: $('#renameFile .a').val(),
+          name: $('#renameFile .b').val()
+        }),
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#renameFile div').html(res);
+        }
+      });
+    });
+
+    $('#createDoc button').click(function(){
+      $.ajax({
+        url: "/createDoc",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: $('#createDoc .a').val(),
+          parent: $('#createDoc .b').val()
+        }),
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#createDoc div').html(res);
+        }
+      });
+    });
+
+    $('#createDir button').click(function(){
+      $.ajax({
+        url: "/createDir",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: $('#createDir .a').val(),
+          parent: $('#createDir .b').val()
+        }),
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#createDir div').html(res);
+        }
+      });
+    });
+
+    $('#downloadPdf button').click(function(){
+      $.ajax({
+        url: "/downloadPdf",
+        type: 'GET',
+        data:
+        {
+          fileId: $('#downloadPdf .a').val() // ID del directorio ( El ID del directorio principal es 'root' ).
+        },
+        success: function(res,status)
+        {
+          // Retorna un arreglo JSON con la información de cada archivo del directorio (kind,id,name,mimeType)
+          var downloadUrl = JSON.parse(res);
+          $('#downloadPdf div').html(downloadUrl);
         }
       });
     });

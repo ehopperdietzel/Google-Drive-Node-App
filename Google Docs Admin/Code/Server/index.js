@@ -168,8 +168,6 @@ app.post('/copyFile', function (req, res) {
     return;
   }
 
-  console.log(req.body);
-
   drive.files.copy({
     auth: admin,
     fileId: req.body.fileId,
@@ -193,6 +191,190 @@ app.post('/copyFile', function (req, res) {
     });
 });
 
+app.post('/moveFile', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  // Se obtienen los IDs de los directorios padre anteriores
+  drive.files.get({
+    auth: admin,
+    fileId: req.body.fileId,
+    fields: 'parents'
+    },function (err, file)
+    {
+
+    if (err)
+    {
+      console.error(err);
+    }
+    else
+    {
+      console.log(file);
+      // Obtiene los padres viejos
+      var oldParents = file.data.parents;
+
+      // Le asigna el nuevo padre
+      drive.files.update({
+        auth: admin,
+        fileId: req.body.fileId,
+        addParents: req.body.parent,
+        removeParents: oldParents
+        },function (err, file)
+        {
+        if (err)
+        {
+          console.error(err);
+        } else
+        {
+          // El ha sido movido
+          console.log(file);
+        }
+      });
+    }
+  });
+});
+
+app.post('/renameFile', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.files.update({
+    auth: admin,
+    fileId: req.body.fileId,
+    resource:{
+      name: req.body.name,
+    }
+    },
+    function (err, ans)
+    {
+      if (err)
+      {
+        console.log(err);
+        res.send("No se pudo reenviar el archivo.");
+      }
+      else
+      {
+        // Retorna (kind,id,name,mimeType)
+        console.log(ans);
+      }
+    });
+});
+
+app.post('/createDoc', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.files.create({
+    auth: admin,
+    resource:{
+      name: req.body.name,
+      parents:[req.body.parent],
+      mimeType:"application/vnd.google-apps.document"
+    }
+    },
+    function (err, ans)
+    {
+      if (err)
+      {
+        console.log(err);
+        res.send("No se pudo crear el archivo.");
+      }
+      else
+      {
+        // Retorna (kind,id,name,mimeType)
+        console.log(ans);
+      }
+    });
+});
+
+app.post('/createDir', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.files.create({
+    auth: admin,
+    resource:{
+      name: req.body.name,
+      parents:[req.body.parent],
+      mimeType:"application/vnd.google-apps.folder"
+    }
+    },
+    function (err, ans)
+    {
+      if (err)
+      {
+        console.log(err);
+        res.send("No se pudo crear el directorio.");
+      }
+      else
+      {
+        // Retorna (kind,id,name,mimeType)
+        console.log(ans);
+      }
+    });
+});
+
+app.get('/downloadPdf', function (req, res) {
+
+  var admin = getSessionFromToken(req.cookies.token);
+
+  if(!admin)
+  {
+    res.send("Error");
+    return;
+  }
+
+  drive.files.export({
+    auth: admin,
+    fileId: req.query.fileId,
+    mimeType:"application/pdf"
+    },
+    {
+      responseType: 'stream'
+    },
+    function (err, ans)
+    {
+      if (err)
+      {
+        console.log(err);
+        res.send("No se pudo generar el link de descarga.");
+      }
+      else
+      {
+        const dest = fs.createWriteStream(__dirname + "/pdf/demo.pdf");
+        ans.data.on('error', err =>
+        {
+            console.log(err);
+        }).on('end', ()=>{
+            console.log("OK");
+        }).pipe(dest);
+      }
+    });
+});
 
 // Inicia el servidor en el puerto establecido en el archivo conf.json
 app.listen(conf.port, function () {
