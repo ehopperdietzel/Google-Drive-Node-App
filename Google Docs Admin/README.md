@@ -59,7 +59,7 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 ## Métodos API REST
 
 ### Listado de un directorio : GET /listDir
---
+-----------------------------------------------
 Retorna una lista con la información de todos los archivos de un directorio.
 Por defecto solo muestra archivos de tipo directorio y Google Docs. Se pueden agregar más tipos modificando el parámetro *mimeTypes* en el archivo *conf.json*. [Lista de MIME Types soportados.](https://developers.google.com/drive/api/v3/mime-types)
 
@@ -105,9 +105,9 @@ Retorna un arreglo de objetos en formato JSON, donde cada objeto posee los sigui
 	</tr>
 </table>
 
---
+-------------------------------------------------------------------
 ### Copia de un archivo : POST /copyFile
---
+-----------------------------------------------
 Realiza una copia de un archivo en Google Drive.
 
 ##### Entrada
