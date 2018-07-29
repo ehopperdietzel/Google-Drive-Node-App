@@ -17,9 +17,11 @@
     <!-- LISTAR DIRECTORIO -->
     <div id="listDir">
       <button>Listar Directorio</button>
-      <input placeholder="ID del Directorio"/>
+      <input placeholder="ID del Directorio"/><br><br>
       <div style="font-size:13px"></div>
     </div>
+
+    <hr>
 
     <!-- COPIAR ARCHIVO -->
     <div id="copyFile">
@@ -27,56 +29,131 @@
       <input class="a" placeholder="ID del archivo"/>
       <input class="b" placeholder="ID del directorio de destino"/>
       <input class="c" placeholder="Nuevo Nombre de Archivo"/>
-      <div style="font-size:13px"></div>
+      <span style="font-size:12px"></span>
     </div>
+
+    <hr>
 
     <!-- MOVER ARCHIVO -->
     <div id="moveFile">
       <button>Mover Archivo</button>
       <input class="a" placeholder="ID del archivo"/>
       <input class="b" placeholder="ID del directorio de destino"/>
-      <div style="font-size:13px"></div>
+      <span style="font-size:13px"></span>
     </div>
+
+    <hr>
 
     <!-- RENOMBRAR ARCHIVO -->
     <div id="renameFile">
       <button>Renombrar Archivo</button>
       <input class="a" placeholder="ID del archivo"/>
       <input class="b" placeholder="Nuevo Nombre"/>
-      <div style="font-size:13px"></div>
+      <span style="font-size:13px"></span>
     </div>
+
+    <hr>
 
     <!-- CREAR DOCUMENTO -->
     <div id="createDoc">
       <button>Crear Documento</button>
       <input class="a" placeholder="Nombre"/>
       <input class="b" placeholder="ID del directorio de destino"/>
-      <div style="font-size:13px"></div>
+      <span style="font-size:13px"></span>
     </div>
+
+    <hr>
 
     <!-- CREAR DIRECTORIO -->
     <div id="createDir">
       <button>Crear Directorio</button>
       <input class="a" placeholder="Nombre"/>
       <input class="b" placeholder="ID del directorio de destino"/>
-      <div style="font-size:13px"></div>
+      <span style="font-size:13px"></span>
     </div>
+
+    <hr>
 
     <!-- DESCARGAR PDF -->
     <div id="downloadPdf">
       <button>Descargar PDF</button>
       <input class="a" placeholder="ID del documenro"/>
+      <span style="font-size:13px"></span>
+    </div>
+
+    <hr>
+
+    <!-- ASIGNAR PERMISOS DE ARCHIVO -->
+    <div id="createFilePermission">
+      <button>Crear Permiso</button>
+      <input class="a" placeholder="ID del documento"/>
+      <input class="b" placeholder="Email del Usuario"/>
+      <input class="c" placeholder="Rol: Ej writer"/>
+      <span style="font-size:13px"></span>
+    </div>
+
+    <hr>
+
+    <!-- ASIGNAR PERMISOS DE ARCHIVO -->
+    <div id="deleteFilePermission">
+      <button>Eliminar Permiso</button>
+      <input class="a" placeholder="ID del documento"/>
+      <input class="b" placeholder="ID del permiso"/>
+      <span style="font-size:13px"></span>
+    </div>
+
+    <hr>
+
+    <!-- MODIFICAR PERMISOS DE ARCHIVO -->
+    <div id="updateFilePermission">
+      <button>Modificar Permiso</button>
+      <input class="a" placeholder="ID del documento"/>
+      <input class="b" placeholder="ID del permiso"/>
+      <input class="c" placeholder="Nuevo Rol"/>
+      <span style="font-size:13px"></span>
+    </div>
+
+    <hr>
+
+    <!-- LISTAR PERMISOS DE ARCHIVO -->
+    <div id="listFilePermissions">
+      <button>Listar Permisos de archivo</button>
+      <input class="a" placeholder="ID del documento"/>
       <div style="font-size:13px"></div>
     </div>
 
-    <!-- ASIGNAR PERMISOS DE ARCHIVO -->
-    <div id="createFilePermissions">
-      <button>OTORGAR PERMISO</button>
+    <hr>
+
+    <!-- INFORMACIÓN DE UN PERMISO -->
+    <div id="permissionInfo">
+      <button>Información de permiso</button>
       <input class="a" placeholder="ID del documento"/>
-      <input class="b" placeholder="Email del Usuario"/>
-      <input class="c" placeholder="Permiso: Ej writer"/>
+      <input class="b" placeholder="ID del permiso"/>
+      <span style="font-size:13px"></span>
+    </div>
+
+    <hr>
+
+    <!-- LISTAR COMENTARIOS DE UN ARCHIVO -->
+    <div id="listFileComments">
+      <button>Listar comentarios</button>
+      <input class="a" placeholder="ID del documento"/>
       <div style="font-size:13px"></div>
     </div>
+
+    <hr>
+
+    <!-- LISTAR CAMBIOS DE UN ARCHIVO -->
+    <div id="listFileChanges">
+      <button>Listar cambios de archivo</button>
+      <input class="a" placeholder="ID del documento"/>
+      <div style="font-size:13px"></div>
+    </div>
+
+
+
+
+
 
 
   </div>
@@ -98,26 +175,33 @@ $(document).ready(function(){
      ****************************************/
 
     $('#listDir button').click(function(){
+
+      var section = "listDir";
+
       $.ajax({
-        url: "/listDir",
+        url: "/"+section,
         type: 'GET',
         data:
         {
-          fileId: $('#listDir input').val()
+          fileId: $('#'+section+' input').val()
         },
-        success: function(res,status)
+        error: function (request, error)
         {
-          // Retorna un arreglo JSON con la información de cada archivo del directorio (kind,id,name,mimeType)
-          var files = JSON.parse(res);
-
+          $('#'+section+' div').html(request.responseText);
+        },
+        success: function( files, status )
+        {
           // Imprime los archivos
-          $('#listDir div').empty();
-          $('#listDir div').append("<b style='font-size:20px'>--------- Archivos---------- </b><br>");
+          $('#'+section+' div').empty();
+
+          var html = "<table><tr><th>Nombre de archivo o directorio</th><th>Tipo de archivo</th><th>ID de archivo</th></tr>";
+
           for( var i = 0; i < files.length; i++ )
           {
-            $('#listDir div').append("<b>ID:</b> " + files[i].id + "<br><b>NAME:</b> " + files[i].name + "<br><b>TIPO:</b> " + files[i].mimeType + "<br><br>");
-
+            html+="<tr><td>" + files[i].name + "</td><td>" + files[i].mimeType + "</td><td>" + files[i].id + "</td></tr>";
           }
+
+          $('#'+section+' div').html(html+ "</table>");
         }
       });
     });
@@ -127,129 +211,385 @@ $(document).ready(function(){
      ****************************************/
 
     $('#copyFile button').click(function(){
+
+      var section = "copyFile";
+
       $.ajax({
-        url: "/copyFile",
+        url: "/"+section,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-          fileId: $('#copyFile .a').val(),
-          parent: $('#copyFile .b').val(),
-          name: $('#copyFile .c').val()
+          fileId: $('#'+section+' .a').val(),
+          parent: $('#'+section+' .b').val(),
+          name: $('#'+section+' .c').val()
         }),
-        success: function(res,status)
+        error: function (request, error)
         {
-          // Imprime los archivos
-          $('#copyFile div').html(res);
-        }
-      });
-    });
-
-    $('#moveFile button').click(function(){
-      $.ajax({
-        url: "/moveFile",
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          fileId: $('#moveFile .a').val(), // ID del directorio ( El ID del directorio principal es 'root' ).
-          parent: $('#moveFile .b').val()
-        }),
-        success: function(res,status)
-        {
-          // Imprime la respuesta
-          $('#moveFile div').html(res);
-        }
-      });
-    });
-
-    $('#renameFile button').click(function(){
-      $.ajax({
-        url: "/renameFile",
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          fileId: $('#renameFile .a').val(),
-          name: $('#renameFile .b').val()
-        }),
-        success: function(res,status)
-        {
-          // Imprime la respuesta
-          $('#renameFile div').html(res);
-        }
-      });
-    });
-
-    $('#createDoc button').click(function(){
-      $.ajax({
-        url: "/createDoc",
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          name: $('#createDoc .a').val(),
-          parent: $('#createDoc .b').val()
-        }),
-        success: function(res,status)
-        {
-          // Imprime la respuesta
-          $('#createDoc div').html(res);
-        }
-      });
-    });
-
-    $('#createDir button').click(function(){
-      $.ajax({
-        url: "/createDir",
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          name: $('#createDir .a').val(),
-          parent: $('#createDir .b').val()
-        }),
-        success: function(res,status)
-        {
-          // Imprime la respuesta
-          $('#createDir div').html(res);
-        }
-      });
-    });
-
-    $('#downloadPdf button').click(function(){
-      $.ajax({
-        url: "/downloadPdf",
-        type: 'GET',
-        data:
-        {
-          fileId: $('#downloadPdf .a').val() // ID del directorio ( El ID del directorio principal es 'root' ).
+          $('#'+section+' span').html(request.responseText);
         },
         success: function(res,status)
         {
-          // Retorna un arreglo JSON con la información de cada archivo del directorio (kind,id,name,mimeType)
-          var downloadUrl = JSON.parse(res);
-          $('#downloadPdf div').html(downloadUrl);
+          $('#'+section+' span').html("ID de la copia: "+ res.id);
         }
       });
     });
 
-    $('#createFilePermissions button').click(function(){
+    /****************************************
+     ** Mover un archivo.
+     ****************************************/
+
+    $('#moveFile button').click(function(){
+
+      var section = "moveFile";
+
       $.ajax({
-        url: "/createFilePermissions",
-        type: 'POST',
+        url: "/"+section,
+        type: 'PATCH',
         contentType: 'application/json',
         data: JSON.stringify({
-          fileId: $('#createFilePermissions .a').val(),
-          permission:
-            {
-              type: "user",
-              role: $('#createFilePermissions .c').val(),
-              emailAddress: $('#createFilePermissions .b').val()
-            }
+          fileId: $('#'+section+' .a').val(), // ID del archivo.
+          parent: $('#'+section+' .b').val() // ID del directorio.
         }),
+        error: function (request, error)
+        {
+          $('#'+section+' span').html(request.responseText);
+        },
         success: function(res,status)
         {
           // Imprime la respuesta
-          $('#createFilePermissions div').html(res);
+          $('#'+section+' span').html("ID del archivo: " + res.id);
         }
       });
     });
+
+    /****************************************
+     ** Renombrar un archivo.
+     ****************************************/
+
+    $('#renameFile button').click(function(){
+
+      var section = "renameFile";
+
+      $.ajax({
+        url: "/"+section,
+        type: 'PATCH',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          fileId: $('#'+section+' .a').val(),
+          name: $('#'+section+' .b').val()
+        }),
+        error: function (request, error)
+        {
+          $('#'+section+' span').html(request.responseText);
+        },
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#'+section+' span').html("ID del archivo: " + res.id);
+        }
+      });
+    });
+
+    /****************************************
+     ** Crear un nuevo documento.
+     ****************************************/
+
+    $('#createDoc button').click(function(){
+
+      var section = "createDoc";
+
+      $.ajax({
+        url: "/"+section,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: $('#'+section+' .a').val(),
+          parent: $('#'+section+' .b').val()
+        }),
+        error: function (request, error)
+        {
+          $('#'+section+' span').html(request.responseText);
+        },
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#'+section+' span').html("ID del nuevo documento: " + res.id );
+        }
+      });
+    });
+
+    /****************************************
+     ** Crear un nuevo directorio.
+     ****************************************/
+
+    $('#createDir button').click(function(){
+
+      var section = "createDir";
+
+      $.ajax({
+        url: "/"+section,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: $('#'+section+' .a').val(),
+          parent: $('#'+section+' .b').val()
+        }),
+        error: function (request, error)
+        {
+          $('#'+section+' span').html(request.responseText);
+        },
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#'+section+' span').html("ID del nuevo directorio: " + res.id);
+        }
+      });
+    });
+
+    /****************************************
+     ** Descargar PDF.
+     ****************************************/
+
+    $('#downloadPdf button').click(function(){
+
+      var section = "downloadPdf";
+
+      $.ajax({
+        url: "/"+section,
+        type: 'GET',
+        data:
+        {
+          fileId: $('#'+section+' .a').val()
+        },
+        error: function (request, error)
+        {
+          $('#'+section+' span').html(request.responseText);
+        },
+        success: function(res,status)
+        {
+          $('#'+section+' span').html("<a href='"+res+"'>URL de descarga</a>");
+        }
+      });
+    });
+
+    /****************************************
+     ** Crear permisos de archivo.
+     ****************************************/
+
+    $('#createFilePermission button').click(function(){
+
+      var section = "createFilePermission";
+
+      $.ajax({
+        url: "/"+section,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          fileId: $('#'+section+' .a').val(),
+          role: $('#'+section+' .c').val(),
+          emailAddress: $('#'+section+' .b').val()
+        }),
+        error: function (request, error)
+        {
+          $('#'+section+' span').html(request.responseText);
+        },
+        success: function(res,status)
+        {
+          // Imprime la respuesta
+          $('#'+section+' span').html("ID del permiso: " + res.id );
+        }
+      });
+    });
+
+    /****************************************
+     ** Eliminar permisos de archivo.
+     ****************************************/
+
+     $('#deleteFilePermission button').click(function(){
+
+       var section = "deleteFilePermission";
+
+       $.ajax({
+         url: "/"+section,
+         type: 'DELETE',
+         contentType: 'application/json',
+         data: JSON.stringify({
+           fileId: $('#'+section+' .a').val(),
+           permissionId: $('#'+section+' .b').val()
+         }),
+         error: function (request, error)
+         {
+           $('#'+section+' span').html(request.responseText);
+         },
+         success: function(res,status)
+         {
+
+           // Imprime la respuesta
+           $('#'+section+' span').html(res);
+         }
+       });
+     });
+
+     /****************************************
+      ** Modificar permisos de archivo.
+      ****************************************/
+
+      $('#updateFilePermission button').click(function(){
+
+        var section = "updateFilePermission";
+
+        $.ajax({
+          url: "/"+section,
+          type: 'PATCH',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            fileId: $('#'+section+' .a').val(),
+            permissionId: $('#'+section+' .b').val(),
+            role: $('#'+section+' .c').val()
+          }),
+          error: function (request, error)
+          {
+            $('#'+section+' span').html(request.responseText);
+          },
+          success: function(res,status)
+          {
+
+            // Imprime la respuesta
+            $('#'+section+' span').html("Nuevo Rol: " + res.role );
+          }
+        });
+      });
+
+      /****************************************
+       ** Listar permisos de archivo.
+       ****************************************/
+
+       $('#listFilePermissions button').click(function(){
+
+         var section = "listFilePermissions";
+
+         $.ajax({
+           url: "/"+section,
+           type: 'GET',
+           contentType: 'application/json',
+           data:{
+             fileId: $('#'+section+' .a').val(),
+           },
+           error: function (request, error)
+           {
+             $('#'+section+' div').html(request.responseText);
+           },
+           success: function(res,status)
+           {
+             // Imprime los permisos
+             $('#'+section+' div').empty();
+
+             var html = "<table><tr><th>ID del permiso</th><th>Rol del permiso</th><th>Email del usuario del permiso</th></tr>";
+
+             for( var i = 0; i < res.length; i++ )
+             {
+               html+="<tr><td>" + res[i].id + "</td><td>" + res[i].role + "</td><td>" + res[i].emailAddress + "</td></tr>";
+             }
+
+             $('#'+section+' div').html(html+ "</table>");
+           }
+         });
+       });
+
+       /****************************************
+        ** Información de un permiso.
+        ****************************************/
+
+        $('#permissionInfo button').click(function(){
+
+          var section = "permissionInfo";
+
+          $.ajax({
+            url: "/"+section,
+            type: 'GET',
+            contentType: 'application/json',
+            data:{
+              fileId: $('#'+section+' .a').val(),
+              permissionId: $('#'+section+' .b').val()
+            },
+            error: function (request, error)
+            {
+              $('#'+section+' span').html(request.responseText);
+            },
+            success: function(res,status)
+            {
+              $('#'+section+' span').html("Email del usuario del permiso: " + res.emailAddress);
+            }
+          });
+        });
+
+
+        /****************************************
+         ** Listar comentarios de un archivo.
+         ****************************************/
+
+         $('#listFileComments button').click(function(){
+
+           var section = "listFileComments";
+
+           $.ajax({
+             url: "/"+section,
+             type: 'GET',
+             contentType: 'application/json',
+             data:
+             {
+               fileId: $('#'+section+' .a').val()
+             },
+             error: function (request, error)
+             {
+               $('#'+section+' div').html(request.responseText);
+             },
+             success: function(res,status)
+             {
+               // Imprime los permisos
+               $('#'+section+' div').empty();
+
+               var html = "<table><tr><th>ID del comentario</th><th>Nombre del comentador</th><th>Comentario</th><th>Respuestas</th></tr>";
+
+               for( var i = 0; i < res.length; i++ )
+               {
+                 html+="<tr><td>" + res[i].id + "</td><td>" + res[i].author.displayName + "</td><td>" + res[i].content + "</td><td>" + res[i].replies.length + "</td></tr>";
+               }
+
+               $('#'+section+' div').html(html+ "</table>");
+
+             }
+           });
+         });
+
+         /****************************************
+          ** Listar cambios de un archivo.
+          ****************************************/
+
+          $('#listFileChanges button').click(function(){
+
+            var section = "listFileChanges";
+
+            $.ajax({
+              url: "/"+section,
+              type: 'GET',
+              contentType: 'application/json',
+              data:
+              {
+                fileId: $('#'+section+' .a').val()
+              },
+              error: function (request, error)
+              {
+                $('#'+section+' div').html(request.responseText);
+              },
+              success: function(res,status)
+              {
+                console.log(res);
+
+              }
+            });
+          });
+
 
 
 
@@ -260,7 +600,10 @@ $(document).ready(function(){
     // Esconde la interfaz
     //$('#interfaceWindow').hide();
 
-    // Al presionar el botón login, el servidor genera un URL para iniciar sesión
+    /****************************************
+     ** Generar URL de login.
+     ****************************************/
+
     $('#loginWindow button').click(function(){
       $.ajax({
         url: "/loginUrl",
@@ -296,3 +639,13 @@ $(document).ready(function(){
 });
 
 </script>
+
+<style>
+
+table, th, td
+{
+   border: 1px solid black;
+   font-size:12px
+}
+
+</style>
