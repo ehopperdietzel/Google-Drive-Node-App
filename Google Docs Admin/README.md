@@ -76,9 +76,8 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 17. [Listar cambios de un archivo](#p)
 
 
-<span id="wiki-a"></span>
+<hr id="a">
 
------------------------------------------------
 ### Generar URL de login : GET /loginUrl
 -----------------------------------------------
 
@@ -92,9 +91,8 @@ Sin parámetros de entrada.
 
 Retorna un URL STRING para iniciar sesión, el cual luego debería redireccionar al método */login* como se explica a continuación.
 
-<span id="wiki-b"></span>
+<hr id="b">
 
------------------------------------------------
 ### Inicio de sesión : GET /login
 -----------------------------------------------
 Es el URL al cual debe redirigir la ventana de inicio de sesión OAuth de Google ( Paso Nº10 de la configuración ), el cual contiene el parámetro de entrada *code*, con el código necesario para generar un token de sesión.
@@ -119,9 +117,8 @@ Parámetros del GET request:
 ##### Respuesta
 Si todo concluye con éxito, el token es almacenado en una *cookie("token")* para manejar la sesión, y se envía la página de la interfaz al usuario.
 
-<span id="wiki-c"></span>
+<hr id="c">
 
------------------------------------------------
 ### Listado de un directorio : GET /listDir
 -----------------------------------------------
 
@@ -232,9 +229,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
-<span id="wiki-e"></span>
+<hr id="e">
 
------------------------------------------------
 ### Mover un archivo : PATCH /moveFile
 -----------------------------------------------
 
@@ -288,9 +284,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
-<span id="wiki-f"></span>
+<hr id="f">
 
------------------------------------------------
 ### Renombrar un archivo : PATCH /renameFile
 -----------------------------------------------
 
@@ -344,9 +339,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
-<span id="wiki-g"></span>
+<hr id="g">
 
------------------------------------------------
 ### Crear un documento : POST /createDoc
 -----------------------------------------------
 
@@ -400,9 +394,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
-<span id="wiki-h"></span>
+<hr id="h">
 
------------------------------------------------
 ### Crear un directorio : POST /createDir
 -----------------------------------------------
 
@@ -456,9 +449,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
-<span id="wiki-i"></span>
+<hr id="i">
 
------------------------------------------------
 ### Descargar PDF : GET /downloadPdf
 -----------------------------------------------
 
@@ -486,9 +478,8 @@ Parámetros del GET request:
 Retorna un URL STRING con el enlace de descarga del PDF.
 
 ```/downloadFile?name=nombre_del_archivo.pdf```
-<span id="wiki-j"></span>
+<hr id="j">
 
------------------------------------------------
 ### Descargar Archivo : GET /downloadFile
 -----------------------------------------------
 
@@ -514,9 +505,8 @@ Parámetros del GET request:
 ##### Respuesta
 
 Envía el archivo al usuario, como descarga.
-<span id="wiki-k"></span>
+<hr id="k">
 
------------------------------------------------
 ### Crear permisos de archivo : POST /createFilePermission
 -----------------------------------------------
 
@@ -575,9 +565,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
-<span id="wiki-l"></span>
+<hr id="l">
 
------------------------------------------------
 ### Eliminar permiso de archivo : DELETE /deleteFilePermission
 -----------------------------------------------
 
@@ -607,9 +596,8 @@ Se debe enviar un objeto JSON con los siguientes parámetros.
 ##### Respuesta
 
 No retorna ningún dato.
-<span id="wiki-m"></span>
+<hr id="m">
 
------------------------------------------------
 ### Modificar permisos de archivo : PATCH /updateFilePermission
 -----------------------------------------------
 
@@ -669,9 +657,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
-<span id="wiki-n"></span>
+<hr id="n">
 
------------------------------------------------
 ### Listar permisos de archivo : GET /listFilePermissions
 -----------------------------------------------
 
@@ -720,9 +707,8 @@ Retorna un arreglo de objetos en formato JSON con la información de cada permis
 	</tr>
 </table>
 
-<span id="wiki-ñ"></span>
+<hr id="ñ">
 
------------------------------------------------
 ### Información de un permiso : GET /permissionInfo
 -----------------------------------------------
 
@@ -776,9 +762,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros:
 	</tr>
 </table>
 
-<span id="wiki-o"></span>
+<hr id="o">
 
------------------------------------------------
 ### Listar comentarios de un archivo : GET /listFileComments
 -----------------------------------------------
 
@@ -806,9 +791,8 @@ Retorna un arreglo de objetos en formato JSON, donde cada objeto tiene la siguie
 
 [Ver estructura.](https://developers.google.com/drive/api/v3/reference/comments#resource)
 
-<span id="wiki-p"></span>
+<hr id="p">
 
------------------------------------------------
 ### Listar cambios de un archivo : GET /listFileChanges
 -----------------------------------------------
 
