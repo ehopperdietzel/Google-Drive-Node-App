@@ -172,9 +172,8 @@ Retorna un arreglo de objetos en formato JSON con la información de cada archiv
 	</tr>
 </table>
 
-<span id="wiki-d"></span>
+<hr id="d">
 
------------------------------------------------
 ### Copia de un archivo : POST /copyFile
 -----------------------------------------------
 
