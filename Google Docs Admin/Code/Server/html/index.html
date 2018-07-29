@@ -14,10 +14,17 @@
   <!-- INTERFAZ -->
   <div id="interfaceWindow">
 
+    <!-- LOGOUT -->
+    <div id="logout">
+      <button onclick="window.location.replace('/logout')">Logout</button>
+    </div>
+
+    <hr>
+    
     <!-- LISTAR DIRECTORIO -->
     <div id="listDir">
       <button>Listar Directorio</button>
-      <input placeholder="ID del Directorio"/><br><br>
+      <input placeholder="ID del Directorio"/>
       <div style="font-size:13px"></div>
     </div>
 
@@ -150,12 +157,6 @@
       <div style="font-size:13px"></div>
     </div>
 
-
-
-
-
-
-
   </div>
 </body>
 </html>
@@ -165,10 +166,10 @@
 $(document).ready(function(){
 
   // Si existe el token en las cookies ( Ya se ha iniciado sesión )
-  //if( $.cookie('token') )
-  //{
+  if( $.cookie('token') )
+  {
     // Esconde la ventana de login
-    //$('#loginWindow').hide();
+    $('#loginWindow').hide();
 
     /****************************************
      ** Listado de un directorio.
@@ -607,12 +608,12 @@ $(document).ready(function(){
 
 
 
-  //}
+  }
   // Si no se ha iniciado sesión
-  //else
-  //{
+  else
+  {
     // Esconde la interfaz
-    //$('#interfaceWindow').hide();
+    $('#interfaceWindow').hide();
 
     /****************************************
      ** Generar URL de login.
@@ -625,31 +626,12 @@ $(document).ready(function(){
         success: function(res,status)
         {
           // Redirige al URL para iniciar sesión
-          window.location.href = res;
+          window.location.replace(res);
         }
       });
     });
-  //}
+  }
 
-/*
-  $('#filesWindow button').click(function(){
-
-    var password = $('#loginWindow input').val();
-
-    $.ajax({
-      url: "/getFiles",
-      type: 'GET',
-      success: function(res,status)
-      {
-          alert(res + " " + status);
-      },
-      error: function(res,status)
-      {
-          alert(res + " " + status);
-      }
-    });
-  });
-*/
 });
 
 </script>

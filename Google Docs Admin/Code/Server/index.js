@@ -142,6 +142,46 @@ app.get('/login', function (req, res) {
 });
 
 /****************************************
+ ** Generar URL de login.
+ ****************************************/
+
+app.get('/logout', function (req, res) {
+
+  // Comprueba que el usuario ha iniciado sesión
+  var admin = getSessionFromToken( req.cookies.token );
+
+  if(!admin)
+  {
+    // Elimina el token de las cookies
+    res.clearCookie("token");
+
+    // Redirige el cliente a la interfaz nuevamente
+    res.sendFile(__dirname + '/html/index.html');
+    return;
+  }
+
+  // Recorre las sesiones para encontrar al usuario con ese token
+  for( var i = 0; i<sessions.length; i++ )
+  {
+    // Si lo encuentra
+    if(sessions[i].credentials.access_token == req.cookies.token )
+    {
+
+      // Elimina la sesión
+      sessions.splice(i,1);
+
+      // Elimina el token de las cookies
+      res.clearCookie("token");
+      break;
+    }
+  }
+
+  // Redirige el cliente a la interfaz nuevamente
+  res.sendFile(__dirname + '/html/index.html');
+
+});
+
+/****************************************
  ** Listado de un directorio.
  ****************************************/
 

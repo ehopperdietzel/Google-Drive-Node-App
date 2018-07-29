@@ -59,21 +59,22 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 
 1. [Generar URL de login](#a)
 2. [Inicio de sesión](#b)
-3. [Listado de un directorio](#c)
-4. [Copia de un archivo](#d)
-5. [Mover un archivo](#e)
-6. [Renombrar un archivo](#f)
-7. [Crear un documento](#g)
-8. [Crear un directorio](#h)
-9. [Descargar PDF](#i)
-10. [Descargar Archivo](#j)
-11. [Crear permisos de archivo](#k)
-12. [Eliminar permiso de archivo](#l)
-13. [Modificar permisos de archivo](#m)
-14. [Listar permisos de archivo](#n)
-15. [Información de un permiso](#ñ)
-16. [Listar comentarios de un archivo](#o)
-17. [Listar cambios de un archivo](#p)
+3. [Cierre de sesión](#bb)
+4. [Listado de un directorio](#c)
+5. [Copia de un archivo](#d)
+6. [Mover un archivo](#e)
+7. [Renombrar un archivo](#f)
+8. [Crear un documento](#g)
+9. [Crear un directorio](#h)
+10. [Descargar PDF](#i)
+11. [Descargar Archivo](#j)
+12. [Crear permisos de archivo](#k)
+13. [Eliminar permiso de archivo](#l)
+14. [Modificar permisos de archivo](#m)
+15. [Listar permisos de archivo](#n)
+16. [Información de un permiso](#ñ)
+17. [Listar comentarios de un archivo](#o)
+18. [Listar cambios de un archivo](#p)
 
 
 <hr id="a">
@@ -95,7 +96,7 @@ Retorna un URL STRING para iniciar sesión, el cual luego debería redireccionar
 
 ### Inicio de sesión : GET /login
 -----------------------------------------------
-Es el URL al cual debe redirigir la ventana de inicio de sesión OAuth de Google ( Paso Nº10 de la configuración ), el cual contiene el parámetro de entrada *code*, con el código necesario para generar un token de sesión.
+Es el URL al cual debe redirigir la ventana de inicio de sesión OAuth de Google ( Paso Nº10 de la configuración ), el cual contiene el parámetro de entrada *code*, con el código necesario para generar un token de sesión.<br> Después de iniciar por primera vez, iniciará automaticamente si tiene la sesión de Google activa en su navegador.
 
 ##### Entrada
 
@@ -117,7 +118,20 @@ Parámetros del GET request:
 ##### Respuesta
 Si todo concluye con éxito, el token es almacenado en una *cookie("token")* para manejar la sesión, y se envía la página de la interfaz al usuario.
 
-<hr id="c">
+<hr id="b">
+
+### Cierre de sesión : GET /logout
+-----------------------------------------------
+Cierra la sesión del administrador.
+
+##### Entrada
+
+Sin parámetros de entrada.
+
+##### Respuesta
+Redirige a la página de inicio.
+
+<hr id="bb">
 
 ### Listado de un directorio : GET /listDir
 -----------------------------------------------
