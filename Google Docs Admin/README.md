@@ -57,29 +57,27 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 
 ## Métodos API REST
 
-### Índice
+1. [Generar URL de login](#a)
+* [Inicio de sesión](#b)
+* [Listado de un directorio](#c)
+* [Copia de un archivo](#d)
+* [Mover un archivo](#e)
+* [Renombrar un archivo](#f)
+* [Crear un documento](#g)
+* [Crear un directorio](#h)
+* [Descargar PDF](#i)
+* [Descargar Archivo](#j)
+* [Crear permisos de archivo](#k)
+* [Eliminar permiso de archivo](#l)
+* [Modificar permisos de archivo](#m)
+* [Listar permisos de archivo](#n)
+* [Información de un permiso](#ñ)
+* [Listar comentarios de un archivo](#o)
+* [Listar cambios de un archivo](#p)
 
-<ol style="font-size:13px;font-weight:bold">
-	<li><a href="#a">Generar URL de login</a></li>
-	<li><a href="#b">Inicio de sesión</a></li>
-	<li><a href="#c">Listado de un directorio</a></li>
-	<li><a href="#d">Copia de un archivo</a></li>
-	<li><a href="#e">Mover un archivo</a></li>
-	<li><a href="#f">Renombrar un archivo</a></li>
-	<li><a href="#g">Crear un documento</a></li>
-	<li><a href="#h">Crear un directorio</a></li>
-	<li><a href="#i">Descargar PDF</a></li>
-	<li><a href="#j">Descargar Archivo</a></li>
-	<li><a href="#k">Crear permisos de archivo</a></li>
-	<li><a href="#l">Eliminar permiso de archivo</a></li>
-	<li><a href="#m">Modificar permisos de archivo</a></li>
-	<li><a href="#n">Listar permisos de archivo</a></li>
-	<li><a href="#ñ">Información de un permiso</a></li>
-	<li><a href="#o">Listar comentarios de un archivo</a></li>
-	<li><a href="#p">Listar cambios de un archivo</a></li>
 
-</ol>
 <span id="a"></span>
+
 -----------------------------------------------
 ### Generar URL de login : GET /loginUrl
 -----------------------------------------------
