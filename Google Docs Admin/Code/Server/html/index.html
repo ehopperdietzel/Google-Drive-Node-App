@@ -546,7 +546,7 @@ $(document).ready(function(){
              },
              success: function(res,status)
              {
-               // Imprime los permisos
+               // Imprime los comentarios
                $('#'+section+' div').empty();
 
                var html = "<table><tr><th>ID del comentario</th><th>Nombre del comentador</th><th>Comentario</th><th>Respuestas</th></tr>";
@@ -584,7 +584,21 @@ $(document).ready(function(){
               },
               success: function(res,status)
               {
-                console.log(res);
+                // Imprime los cambios
+                $('#'+section+' div').empty();
+
+                var html = "<table><tr><th>ID del cambio</th><th>Fecha</th><th>Nombre del editor</th></tr>";
+
+                for( var i = 0; i < res.length; i++ )
+                {
+                  html+="<tr><td>" + res[i].id + "</td><td>" + res[i].modifiedTime + "</td><td>";
+                  if(res[i].lastModifyingUser)
+                    html += res[i].lastModifyingUser.displayName + "</td></tr>";
+                  else
+                    html += "No user data</td></tr>";
+                }
+
+                $('#'+section+' div').html(html+ "</table>");
 
               }
             });

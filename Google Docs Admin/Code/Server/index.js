@@ -825,9 +825,12 @@ app.get('/listFileChanges', function (req, res) {
   }
 
   // Envía solicitud a Google
-  drive.changes.list({
+  drive.revisions.list({
     auth:admin,
     fileId: req.query.fileId,
+    pageSize: 1000,
+    fields: "revisions(id,modifiedTime,lastModifyingUser,originalFilename,size)",
+
   }, function (err, ans) {
 
     // Si ocurre un error de Google
@@ -838,8 +841,7 @@ app.get('/listFileChanges', function (req, res) {
     }
 
     // Éxito
-    console.log(ans)
-    //res.send(ans.data.comments);
+    res.send(ans.data.revisions);
   });
 });
 

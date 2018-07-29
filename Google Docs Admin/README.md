@@ -17,11 +17,10 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 * Obtener información de un permiso ✔️
 * Eliminar permisos a un archivo ✔️
 * Obtener comentarios de un documento ✔️
-* Obtener historial de modificaciones de un documento
-* Obtener última fecha de acceso a un documento
+* Obtener historial de modificaciones de un documento ✔️
 * Copiar archivo a repositorio VPS
-* Frontend de Testeo
-* Documentación
+* Frontend de Testeo ✔️
+* Documentación ✔️
 
 ## Instalación
 
@@ -57,6 +56,30 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 13. Por último, añadir el email del administrador y configurar los otros parámetros a gusto.
 
 ## Métodos API REST
+
+### Índice
+
+<ol style="font-size:13px;font-weight:bold">
+	<li><a href="#a">Generar URL de login</a></li>
+	<li><a href="#b">Inicio de sesión</a></li>
+	<li><a href="#c">Listado de un directorio</a></li>
+	<li><a href="#d">Copia de un archivo</a></li>
+	<li><a href="#e">Mover un archivo</a></li>
+	<li><a href="#f">Renombrar un archivo</a></li>
+	<li><a href="#g">Crear un documento</a></li>
+	<li><a href="#h">Crear un directorio</a></li>
+	<li><a href="#i">Descargar PDF</a></li>
+	<li><a href="#j">Descargar Archivo</a></li>
+	<li><a href="#k">Crear permisos de archivo</a></li>
+	<li><a href="#l">Eliminar permiso de archivo</a></li>
+	<li><a href="#m">Modificar permisos de archivo</a></li>
+	<li><a href="#n">Listar permisos de archivo</a></li>
+	<li><a href="#ñ">Información de un permiso</a></li>
+	<li><a href="#o">Listar comentarios de un archivo</a></li>
+	<li><a href="#p">Listar cambios de un archivo</a></li>
+
+</ol>
+<span id="a"></span>
 -----------------------------------------------
 ### Generar URL de login : GET /loginUrl
 -----------------------------------------------
@@ -71,10 +94,11 @@ Sin parámetros de entrada.
 
 Retorna un URL STRING para iniciar sesión, el cual luego debería redireccionar al método */login* como se explica a continuación.
 
+<span id="b"></span>
+
 -----------------------------------------------
 ### Inicio de sesión : GET /login
 -----------------------------------------------
-
 Es el URL al cual debe redirigir la ventana de inicio de sesión OAuth de Google ( Paso Nº10 de la configuración ), el cual contiene el parámetro de entrada *code*, con el código necesario para generar un token de sesión.
 
 ##### Entrada
@@ -96,10 +120,12 @@ Parámetros del GET request:
 
 ##### Respuesta
 Si todo concluye con éxito, el token es almacenado en una *cookie("token")* para manejar la sesión, y se envía la página de la interfaz al usuario.
+<span id="c"></span>
 
 -----------------------------------------------
 ### Listado de un directorio : GET /listDir
 -----------------------------------------------
+
 Retorna una lista con la información de todos los archivos de un directorio.
 Por defecto solo muestra archivos de tipo directorio y Google Docs. Se pueden agregar más tipos modificando el parámetro *mimeTypes* en el archivo *conf.json*. [Lista de MIME Types soportados.](https://developers.google.com/drive/api/v3/mime-types)
 
@@ -147,9 +173,12 @@ Retorna un arreglo de objetos en formato JSON con la información de cada archiv
 	</tr>
 </table>
 
+<span id="d"></span>
+
 -----------------------------------------------
 ### Copia de un archivo : POST /copyFile
 -----------------------------------------------
+
 Realiza una copia de un archivo en Google Drive.
 
 ##### Entrada
@@ -205,6 +234,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
+<span id="e"></span>
+
 -----------------------------------------------
 ### Mover un archivo : PATCH /moveFile
 -----------------------------------------------
@@ -258,6 +289,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 		<td>Tipo de archivo.</td>
 	</tr>
 </table>
+
+<span id="f"></span>
 
 -----------------------------------------------
 ### Renombrar un archivo : PATCH /renameFile
@@ -313,6 +346,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
+<span id="g"></span>
+
 -----------------------------------------------
 ### Crear un documento : POST /createDoc
 -----------------------------------------------
@@ -366,6 +401,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 		<td>Tipo del archivo.</td>
 	</tr>
 </table>
+
+<span id="h"></span>
 
 -----------------------------------------------
 ### Crear un directorio : POST /createDir
@@ -421,6 +458,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
+<span id="i"></span>
+
 -----------------------------------------------
 ### Descargar PDF : GET /downloadPdf
 -----------------------------------------------
@@ -449,6 +488,7 @@ Parámetros del GET request:
 Retorna un URL STRING con el enlace de descarga del PDF.
 
 ```/downloadFile?name=nombre_del_archivo.pdf```
+<span id="j"></span>
 
 -----------------------------------------------
 ### Descargar Archivo : GET /downloadFile
@@ -476,6 +516,7 @@ Parámetros del GET request:
 ##### Respuesta
 
 Envía el archivo al usuario, como descarga.
+<span id="k"></span>
 
 -----------------------------------------------
 ### Crear permisos de archivo : POST /createFilePermission
@@ -536,6 +577,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
+<span id="l"></span>
+
 -----------------------------------------------
 ### Eliminar permiso de archivo : DELETE /deleteFilePermission
 -----------------------------------------------
@@ -566,6 +609,7 @@ Se debe enviar un objeto JSON con los siguientes parámetros.
 ##### Respuesta
 
 No retorna ningún dato.
+<span id="m"></span>
 
 -----------------------------------------------
 ### Modificar permisos de archivo : PATCH /updateFilePermission
@@ -627,6 +671,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros.
 	</tr>
 </table>
 
+<span id="n"></span>
+
 -----------------------------------------------
 ### Listar permisos de archivo : GET /listFilePermissions
 -----------------------------------------------
@@ -675,6 +721,8 @@ Retorna un arreglo de objetos en formato JSON con la información de cada permis
 		<td>Email del usuario del permiso.</td>
 	</tr>
 </table>
+
+<span id="ñ"></span>
 
 -----------------------------------------------
 ### Información de un permiso : GET /permissionInfo
@@ -730,6 +778,8 @@ Retorna un objeto en formato JSON con los siguientes parámetros:
 	</tr>
 </table>
 
+<span id="o"></span>
+
 -----------------------------------------------
 ### Listar comentarios de un archivo : GET /listFileComments
 -----------------------------------------------
@@ -757,3 +807,33 @@ Parámetros del GET request:
 Retorna un arreglo de objetos en formato JSON, donde cada objeto tiene la siguiente estructura:
 
 [Ver estructura.](https://developers.google.com/drive/api/v3/reference/comments#resource)
+
+<span id="p"></span>
+
+-----------------------------------------------
+### Listar cambios de un archivo : GET /listFileChanges
+-----------------------------------------------
+
+Retorna todos los cambios que Google almacena de un documento.
+
+##### Entrada
+
+Parámetros del GET request:
+<table>
+	<tr>
+		<th>Parámetro</th>
+		<th>Tipo</th>
+		<th>Descripción</th>
+	</tr>
+	<tr>
+		<td>fileId</td>
+		<td>STRING</td>
+		<td>ID del archivo.</td>
+	</tr>
+</table>
+
+##### Respuesta
+
+Retorna un arreglo de objetos en formato JSON, donde cada objeto tiene la siguiente estructura:
+
+[Ver estructura.](https://developers.google.com/drive/api/v3/reference/revisions#resource)
