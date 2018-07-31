@@ -9,6 +9,7 @@
   <!-- LOGIN -->
   <div id="loginWindow">
     <button>Login</button>
+    <input type="password" placeholder="Constraseña"/>
   </div>
 
   <!-- INTERFAZ -->
@@ -20,7 +21,7 @@
     </div>
 
     <hr>
-    
+
     <!-- LISTAR DIRECTORIO -->
     <div id="listDir">
       <button>Listar Directorio</button>
@@ -620,15 +621,10 @@ $(document).ready(function(){
      ****************************************/
 
     $('#loginWindow button').click(function(){
-      $.ajax({
-        url: "/loginUrl",
-        type: 'GET',
-        success: function(res,status)
-        {
-          // Redirige al URL para iniciar sesión
-          window.location.replace(res);
-        }
-      });
+
+      // Redirige al URL para iniciar sesión
+      window.location.href = "/login?password=" + $('#loginWindow input').val();
+
     });
   }
 

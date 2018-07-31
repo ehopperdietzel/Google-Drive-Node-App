@@ -18,9 +18,9 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 * Eliminar permisos a un archivo ✔️
 * Obtener comentarios de un documento ✔️
 * Obtener historial de modificaciones de un documento ✔️
-* Copiar archivo a repositorio VPS
 * Frontend de Testeo ✔️
 * Documentación ✔️
+* Copiar archivo a repositorio VPS
 
 ## Instalación
 
@@ -30,30 +30,19 @@ Servidor Node.js con API REST para facilitar la interacción entre Google Drive 
 
 ## Configuración
 
-1. Ingresar a [Google Console](https://console.cloud.google.com/) con la cuenta de administrador.
+1. Ingresar a [Google Console](https://console.cloud.google.com/).
 2. Crear un nuevo proyecto.
 3. En el panel izquierdo selecciónar *APIs y Servicios*, luego *Biblioteca*.
 4. Buscar *Google Drive API* y habilitarla.
-5. Buscar *Google+ API* y habilitarla.
-6. Volver al panel de *APIs y Servicios*, luego seleccionar *Credenciales* y por último *Pantalla de consentiemiento de OAuth*.
-7. Ingresar los datos solicitados y guardar.
-8. Volver a la pestaña *Credenciales*, hacer click en *Crear credenciales* y seleccionar la opción *ID de cliente de OAuth*.
-9. Seleccionar el tipo de aplicación y añadir un nombre de cliente.
-10. En la sección *URI de redireccionamiento autorizados* ingresar los URL a los cuales se dará permiso de redireccionar luego de iniciar sesión, por ejemplo, si ejecuta la aplicación en un servidor local añadir el URL ```http://localhost:3000/login```.
-11. Una vez terminado hacer click en *Crear*.
-12. Se mostrarán dos códigos, los cuales debe añadir al archivo ```Server/conf/conf.json```.<br>
-```javascript
-{
-	"client_id":"ID de Cliente",
-	"client_secret":"Secreto de Cliente",
-	"email":"Email del administrador",
-	"scopes":["https://www.googleapis.com/auth/plus.profile.emails.read","https://www.googleapis.com/auth/drive"],
-	"mimeTypes":["application/vnd.google-apps.folder","application/vnd.google-apps.document"],
-	"redirect_uris":["http://localhost:3000/login"],
-	"port":3000
-}
-```
-13. Por último, añadir el email del administrador y configurar los otros parámetros a gusto.
+5. Volver al panel de *APIs y Servicios*.
+6. Ir a la pestaña *Credenciales*, hacer click en *Crear credenciales* y seleccionar la opción *Clave de cuenta de servicio*.
+7. Asignar un nombre y selecionar la función *Proyecto > Propietario*.
+8. Seleccionar tipo de clave JSON, y hacer click en crear.
+9. Se descargara un archivo JSON, el cual debe renombrar a *key.json* y ubicarlo en el directorio */conf* de la aplicación.
+10. Hacer click en *Administrar cuentas de servicio* para ver el email del servicio.
+11. Acceder a Google Drive con su cuenta normal y compartir los archivos y directorios que considere necesarios con la cuenta de servicio, otorgándole el permiso de propietario.
+12. Modificar el puerto y contraseña de administrador a gusto, en el archivo conf.json.
+13. Iniciar la aplicación ejecutando el comando ```$ node index.js```
 
 ## Métodos API REST
 
@@ -96,7 +85,7 @@ Retorna un URL STRING para iniciar sesión, el cual luego debería redireccionar
 
 ### Inicio de sesión : GET /login
 -----------------------------------------------
-Es el URL al cual debe redirigir la ventana de inicio de sesión OAuth de Google ( Paso Nº10 de la configuración ), el cual contiene el parámetro de entrada *code*, con el código necesario para generar un token de sesión.<br> Después de iniciar por primera vez, iniciará automaticamente si tiene la sesión de Google activa en su navegador.
+Inicia sesión de administrador, comprueba que la contraseña sea igual a la almacenada en el archivo conf.json.
 
 ##### Entrada
 
@@ -109,16 +98,16 @@ Parámetros del GET request:
 		<th>Descripción</th>
 	</tr>
 	<tr>
-		<td>code</td>
+		<td>password</td>
 		<td>STRING</td>
-		<td>Código generado por OAuth de Google.</td>
+		<td>Contraseña de administrador.</td>
 	</tr>
 </table>
 
 ##### Respuesta
-Si todo concluye con éxito, el token es almacenado en una *cookie("token")* para manejar la sesión, y se envía la página de la interfaz al usuario.
+Si todo concluye con éxito, almacena un token en una *cookie("token")* para manejar la sesión, y se envía la página de la interfaz al usuario.
 
-<hr id="b">
+<hr id="bb">
 
 ### Cierre de sesión : GET /logout
 -----------------------------------------------
@@ -131,7 +120,7 @@ Sin parámetros de entrada.
 ##### Respuesta
 Redirige a la página de inicio.
 
-<hr id="bb">
+<hr id="c">
 
 ### Listado de un directorio : GET /listDir
 -----------------------------------------------
@@ -543,7 +532,7 @@ Se debe enviar un objeto JSON con los siguientes parámetros.
 	<tr>
 		<td>role</td>
 		<td>STRING</td>
-		<td>Rol del usuario. [Ver roles permitidos.](https://developers.google.com/drive/api/v3/about-permissions)</td>
+		<td>Rol del usuario. <a href="https://developers.google.com/drive/api/v3/about-permissions">Ver roles permitidos.</a></td>
 	</tr>
 	<tr>
 		<td>emailAddress</td>
@@ -639,7 +628,7 @@ Se debe enviar un objeto JSON con los siguientes parámetros.
 	<tr>
 		<td>role</td>
 		<td>STRING</td>
-		<td>Nuevo rol. [Ver roles permitidos.](https://developers.google.com/drive/api/v3/about-permissions)</td>
+		<td>Nuevo rol. <a href="https://developers.google.com/drive/api/v3/about-permissions">Ver roles permitidos.</a></td></td>
 	</tr>
 	
 </table>
