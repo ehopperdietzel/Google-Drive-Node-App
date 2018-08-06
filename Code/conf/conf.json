@@ -1,5 +1,6 @@
 {
   "password":"abc",
+  "login":false,
   "scopes":["https://www.googleapis.com/auth/drive"],
   "mimeTypes":["application/vnd.google-apps.folder","application/vnd.google-apps.document"],
   "port":3000

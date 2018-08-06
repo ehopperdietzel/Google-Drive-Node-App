@@ -69,6 +69,18 @@ admin.authorize(function (err, tokens) {
 
    // Envía la página de inicio
    app.get('/', function (req, res) {
+
+     // Si el login esta desactivado
+     if(!conf.login)
+     {
+       res.cookie('token', admin.credentials.access_token);
+       res.cookie('login', false);
+     }
+     else
+     {
+       res.cookie('login', true);
+     }
+
      res.sendFile(__dirname + '/html/index.html');
    });
 

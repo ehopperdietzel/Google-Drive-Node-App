@@ -167,10 +167,15 @@
 $(document).ready(function(){
 
   // Si existe el token en las cookies ( Ya se ha iniciado sesión )
-  if( $.cookie('token') )
+  if( $.cookie('token'))
   {
     // Esconde la ventana de login
     $('#loginWindow').hide();
+
+    if( $.cookie('login') == "false" )
+      $('#logout').hide();
+
+
 
     /****************************************
      ** Listado de un directorio.
